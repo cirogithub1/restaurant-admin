@@ -1,0 +1,280 @@
+// This is your Prisma schema file
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider      =  "mysql"
+  url           =  env("DATABASE_URL")
+  relationMode  =  "prisma"
+}
+
+model Restaurant{
+  id            String        @id @default(uuid())
+  name          String 
+  userId        String
+  billboards    Billboard[]   @relation("RestaurantToBillboard")
+  categories    Category[]    @relation("RestaurantToCategory")
+  regions       Region[]      @relation("RestaurantToRegion")
+  styles        Style[]       @relation("RestaurantToStyle")
+  grape         Grape[]       @relation("RestaurantToGrape")
+  malt          Malt[]        @relation("RestaurantToMalt")
+  colors        Color[]       @relation("RestaurantToColor")
+  plats         Plat[]        @relation("RestaurantToPlat")
+  vins          Vin[]         @relation("RestaurantToVin")
+  biers         Bier[]        @relation("RestaurantToBier")
+  desserts      Dessert[]     @relation("RestaurantToDessert")
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Billboard{
+  id            String        @id @default(uuid())
+  name          String
+  imageUrl      String
+  restaurant    Restaurant    @relation("RestaurantToBillboard", fields: [restaurantId], references: [id])
+  restaurantId  String
+  category      Category[]    @relation("BillboardToCategory")
+
+  createdAt     DateTime      @default(now())  
+  updatedAt     DateTime      @updatedAt
+
+   @@index([restaurantId])
+}
+
+model Category{
+  id            String        @id @default(uuid())
+  name          String
+  restaurant    Restaurant    @relation("RestaurantToCategory", fields: [restaurantId], references: [id])
+  restaurantId  String
+  billboard     Billboard     @relation("BillboardToCategory", fields: [billboardId], references: [id])
+  billboardId   String
+  plats         Plat[]        @relation("CategoryToPlat")
+  vins          Vin[]         @relation("CategoryToVin")
+  biers         Bier[]        @relation("CategoryToBier")
+  dessert       Dessert[]     @relation("CategoryToDessert")
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([restaurantId])
+  @@index([billboardId])
+}
+
+//Bodeau, Loir, Savoye, Borgogne, Alsace
+model Region {
+  id              String      @id @default(uuid())
+  name            String
+  restaurant      Restaurant  @relation("RestaurantToRegion", fields: [restaurantId], references: [id])
+  restaurantId    String    //foreign key to Restaurant
+  vins            Vin[]
+  biers           Bier[]
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([restaurantId])
+}  
+
+//Porter, IPA, Triple, Quadruple, ...
+model Style {
+  id            String      @id @default(uuid())
+  name          String
+  restaurant    Restaurant  @relation("RestaurantToStyle", fields: [restaurantId], references: [id])
+  restaurantId  String    //foreign key to Restaurant
+  biers         Bier[]
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([restaurantId])
+}  
+
+model Grape {
+  id            String      @id @default(uuid())
+  name          String
+  restaurant    Restaurant  @relation("RestaurantToGrape", fields: [restaurantId], references: [id])
+  restaurantId  String    //foreign key to Restaurant
+  vins          Vin[]
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([restaurantId])
+}  
+
+model Malt {
+  id            String      @id @default(uuid())
+  name          String
+  restaurant    Restaurant  @relation("RestaurantToMalt", fields: [restaurantId], references: [id])
+  restaurantId  String    //foreign key to Restaurant
+  biers         Bier[]
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([restaurantId])
+}  
+
+model Color {
+  id              String      @id @default(uuid())
+  name            String
+  value           String
+  restaurant      Restaurant  @relation("RestaurantToColor", fields: [restaurantId], references: [id])
+  restaurantId    String
+  vin             Vin[]
+  bier            Bier[]
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([restaurantId])
+}  
+
+model Plat{
+  id              String       @id @default(uuid())
+  name            String
+  description     String 
+  restaurant      Restaurant   @relation("RestaurantToPlat", fields: [restaurantId], references: [id])
+  restaurantId    String
+  category        Category     @relation("CategoryToPlat", fields: [categoryId], references: [id])
+  categoryId      String
+  formats         Format[]     @relation("PlatToFormat")
+  images          Image[]      @relation("PlatToImage")
+
+  isFeatured      Boolean      @default(false)
+  isArchived      Boolean      @default(false)
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([restaurantId])  
+  @@index([categoryId])
+}
+
+model Vin {
+  id              String      @id @default(uuid())
+  name            String
+  description     String 
+  restaurant      Restaurant  @relation("RestaurantToVin", fields: [restaurantId], references: [id])
+  restaurantId    String
+  category        Category    @relation("CategoryToVin", fields: [categoryId], references: [id]) //ALCOL
+  categoryId      String
+  region          Region      @relation(fields: [regionId], references: [id])
+  regionId        String
+  grape           Grape       @relation(fields: [grapeId], references: [id])
+  grapeId         String
+  color           Color       @relation(fields: [colorId], references: [id])
+  colorId         String
+  formats         Format[]    @relation("VinToFormat")
+  images          Image[]     @relation("VinToImage")
+
+  isFeatured      Boolean     @default(false)
+  isArchived      Boolean     @default(false)
+
+  createdAt       DateTime
+  updatedAt       DateTime
+
+  @@index([restaurantId])  
+  @@index([categoryId])
+  @@index([regionId])
+  @@index([grapeId])
+  @@index([colorId])
+}
+
+model Bier {
+  id              String      @id @default(uuid())
+  name            String
+  description     String 
+  restaurant      Restaurant  @relation("RestaurantToBier", fields: [restaurantId], references: [id])
+  restaurantId    String
+  category        Category    @relation("CategoryToBier", fields: [categoryId], references: [id]) //ALCOL
+  categoryId      String
+  region          Region      @relation(fields: [regionId], references: [id])
+  regionId        String
+  malt            Malt        @relation(fields: [maltId], references: [id])
+  maltId          String
+  style           Style        @relation(fields: [styleId], references: [id])
+  styleId         String
+  color           Color       @relation(fields: [colorId], references: [id])
+  colorId         String
+  formats         Format[]    @relation("BierToFormat")
+  images          Image[]     @relation("BierToImage")
+
+  isFeatured      Boolean     @default(false)
+  isArchived      Boolean     @default(false)
+
+  createdAt       DateTime
+  updatedAt       DateTime
+
+  @@index([restaurantId])  
+  @@index([categoryId])
+  @@index([regionId])
+  @@index([maltId])
+  @@index([styleId])
+  @@index([colorId])
+}
+
+model Dessert{
+  id              String       @id @default(uuid())
+  name            String
+  description     String
+  restaurant      Restaurant   @relation("RestaurantToDessert", fields: [restaurantId], references: [id])
+  restaurantId    String
+  category        Category     @relation("CategoryToDessert", fields: [categoryId], references: [id])
+  categoryId      String
+  images          Image[]      @relation("DessertToImage")
+
+  isFeatured      Boolean      @default(false)
+  isArchived      Boolean      @default(false)
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([restaurantId])  
+  @@index([categoryId])
+}
+
+// 125cc, 250cc, boutteile, simple, double
+model Format {
+  id          String      @id @default(uuid())
+  name        String?
+  price       Decimal
+  plat        Plat?       @relation("PlatToFormat", fields: [platId], references: [id])
+  platId      String?
+  vin         Vin?        @relation("VinToFormat", fields: [vinId], references: [id])
+  vinId       String?
+  bier        Bier?       @relation("BierToFormat", fields: [bierId], references: [id])
+  bierId      String?
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([platId])  
+  @@index([vinId])
+  @@index([bierId])
+}
+
+model Image {
+  id            String      @id @default(uuid())
+  url           String
+  plat          Plat?       @relation("PlatToImage", fields: [platId], references: [id])
+  platId        String?
+  vin           Vin?        @relation("VinToImage", fields: [vinId], references: [id])
+  vinId         String?
+  bier          Bier?       @relation("BierToImage", fields: [bierId], references: [id])
+  bierId        String?
+  dessert       Dessert?    @relation("DessertToImage", fields: [dessertId], references: [id])
+  dessertId     String?
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([platId])  
+  @@index([vinId])
+  @@index([bierId])
+  @@index([dessertId])
+}
