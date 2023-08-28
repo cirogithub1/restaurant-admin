@@ -5,10 +5,14 @@ import { CellAction } from "./cell-action"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type PlatColumn = {
+export type BierColumn = {
   id:           string
   name:         string
   description:  string
+  region:       string  
+  malt:         string
+  style:        string
+  color:        string
   formats: {
     name:   string
     price:  string
@@ -19,7 +23,7 @@ export type PlatColumn = {
   createdAt:    string
 }
 
-export const columns: ColumnDef<PlatColumn>[] = [
+export const columns: ColumnDef<BierColumn>[] = [
   {
     accessorKey: "name",
     header: "Name",
@@ -31,6 +35,22 @@ export const columns: ColumnDef<PlatColumn>[] = [
   {
     accessorKey: "category",
     header: "Category",
+  },
+  {
+    accessorKey: "region",
+    header: "Region",
+  },
+  {
+    accessorKey: "malt",
+    header: "Malt",
+  },
+  {
+    accessorKey: "style",
+    header: "Style",
+  },
+  {
+    accessorKey: "color",
+    header: "Color",
   },
   {
     accessorKey: "format",

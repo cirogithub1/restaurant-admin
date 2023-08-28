@@ -4,15 +4,14 @@ import { FC, useState } from "react"
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react"
 import { toast } from "react-hot-toast"
 import { useParams, useRouter } from "next/navigation"
-import axios from "axios"
 
-import { GrapeColumn } from "./columns"
+import { DessertColumn } from "./columns"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { AlertModal } from "@/components/modals/alert-modal"
 
 interface Props {
-	data: GrapeColumn
+	data: DessertColumn
 }
 
 export const CellAction: FC<Props> = ({ data }) => {
@@ -28,15 +27,20 @@ export const CellAction: FC<Props> = ({ data }) => {
 	}
 
 	const onDelete = async () => {
-		setLoading(true)
 		try {
-			await axios.delete(`/api/${params.restaurantId}/grapes/${data.id}`)
+			setLoading(true)
+			const resp = await fetch(`/api/${params.restaurantId}/desserts/${data.id}`, {
+				method: "DELETE",
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			})
 
 			router.refresh()
-			toast.success("Grape deleted successfully")
+			toast.success("Dessert deleted successfully")
 
 		} catch (error) {
-			toast.error("Remember to remove boissons from this grape first")
+			toast.error("Somthing when wrong")
 		} finally {
 			setLoading(false)
 			setOpen(false)
@@ -62,9 +66,7 @@ export const CellAction: FC<Props> = ({ data }) => {
 				</DropdownMenuTrigger>
 
 				<DropdownMenuContent align="end">
-					<DropdownMenuLabel>
-						Actions
-					</DropdownMenuLabel>
+					<DropdownMenuLabel>Actions</DropdownMenuLabel>
 
 					<DropdownMenuItem onClick={() => onCopy(data.id)}>
 						<Copy className="mr-2 h-4 w-4" />
@@ -73,7 +75,7 @@ export const CellAction: FC<Props> = ({ data }) => {
 					</DropdownMenuItem>
 					
 					<DropdownMenuItem 
-						onClick={() => router.push(`/${params.restaurantId}/grapes/${data.id}`)}
+						onClick={() => router.push(`/${params.restaurantId}/desserts/${data.id}`)}
 					>
 						<Edit className="mr-2 h-4 w-4" />
 

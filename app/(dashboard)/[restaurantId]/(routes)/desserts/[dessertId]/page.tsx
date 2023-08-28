@@ -1,10 +1,10 @@
 import prismadb from "@/lib/prismadb"
-import { PlatForm } from "./components/plat-form"
+import { DessertForm } from "./components/dessert-form"
 
-const PlatPage = async ({ params }: { params: { platId: string, restaurantId: string }}) => {
-	const plat = await prismadb.plat.findUnique({
+const DessertPage = async ({ params }: { params: { dessertId: string, restaurantId: string }}) => {
+	const dessert = await prismadb.dessert.findUnique({
 		where: {
-			id: params.platId
+			id: params.dessertId
 		},
 		include: {
 			images: true,
@@ -21,13 +21,13 @@ const PlatPage = async ({ params }: { params: { platId: string, restaurantId: st
 	return (
 		<div className="flex-col">
 			<div className="flex-1 space-y-4 p-8 pt-6">
-				<PlatForm 
+				<DessertForm 
 					categories={categories}
-					initialData={plat}
+					initialData={dessert}
 				/>
 			</div>
 		</div>
 	)
 }
 
-export default PlatPage
+export default DessertPage

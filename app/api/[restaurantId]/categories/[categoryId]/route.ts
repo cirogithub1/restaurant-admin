@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs"
 import { NextResponse } from "next/server"
 
 // for convention _var means not used or private
-export async function GET(
+export async function GET (
 	_req: Request, { params }: { params: { categoryId: string }}) 
 {
 	if (!params.categoryId) {
@@ -86,7 +86,7 @@ export async function PATCH (
 }
 
 // for convention _var means not used or private
-export async function DELETE(
+export async function DELETE (
 	_req: Request, { params }: { params: { restaurantId: string, categoryId: string }}) 
 {
 	const { userId } = auth()

@@ -4,6 +4,7 @@ import { FC, useState } from "react"
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react"
 import { toast } from "react-hot-toast"
 import { useParams, useRouter } from "next/navigation"
+import axios from "axios"
 
 import { CategoryColumn } from "./columns"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -29,12 +30,7 @@ export const CellAction: FC<Props> = ({ data }) => {
 	const onDelete = async () => {
 		try {
 			setLoading(true)
-			const resp = await fetch(`/api/${params.restaurantId}/categories/${data.id}`, {
-				method: "DELETE",
-				headers: {
-					'Content-Type': 'application/json',
-				}
-			})
+			await axios.delete(`/api/${params.restaurantId}/categories/${data.id}`)
 
 			router.refresh()
 			toast.success("Category deleted successfully")

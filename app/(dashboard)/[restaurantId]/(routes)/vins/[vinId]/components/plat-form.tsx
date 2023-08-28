@@ -317,9 +317,8 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 																	{...field} />
 
 																<Button
-																	className="h-6 w-6 self-center"
 																	variant={"destructive"}
-																	size={'icon'}
+																	size={'sm'}
 																	disabled={loading}
 																	onClick={() => remove(index)}
 																>
@@ -342,7 +341,6 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 						<Button
 							className="ml-auto"
 							disabled={loading}
-							size={'sm'}
 							type="button"
 							onClick={() => append({ name: "new format", price: 0.99 })}
 						>
@@ -407,7 +405,6 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 					<Button
 						className="ml-auto"
 						type="submit"
-						size={'lg'}
 						disabled={loading}
 					>
 						{action}

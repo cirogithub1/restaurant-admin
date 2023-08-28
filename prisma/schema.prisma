@@ -12,53 +12,53 @@ datasource db {
 }
 
 model Restaurant{
-  id            String        @id @default(uuid())
-  name          String 
-  userId        String
-  billboards    Billboard[]   @relation("RestaurantToBillboard")
-  categories    Category[]    @relation("RestaurantToCategory")
-  regions       Region[]      @relation("RestaurantToRegion")
-  styles        Style[]       @relation("RestaurantToStyle")
-  grape         Grape[]       @relation("RestaurantToGrape")
-  malt          Malt[]        @relation("RestaurantToMalt")
-  colors        Color[]       @relation("RestaurantToColor")
-  plats         Plat[]        @relation("RestaurantToPlat")
-  vins          Vin[]         @relation("RestaurantToVin")
-  biers         Bier[]        @relation("RestaurantToBier")
-  desserts      Dessert[]     @relation("RestaurantToDessert")
+  id              String        @id @default(uuid())
+  name            String 
+  userId          String
+  billboards      Billboard[]   @relation("RestaurantToBillboard")
+  categories      Category[]    @relation("RestaurantToCategory")
+  regions         Region[]      @relation("RestaurantToRegion")
+  styles          Style[]       @relation("RestaurantToStyle")
+  grape           Grape[]       @relation("RestaurantToGrape")
+  malt            Malt[]        @relation("RestaurantToMalt")
+  colors          Color[]       @relation("RestaurantToColor")
+  plats           Plat[]        @relation("RestaurantToPlat")
+  vins            Vin[]         @relation("RestaurantToVin")
+  biers           Bier[]        @relation("RestaurantToBier")
+  desserts        Dessert[]     @relation("RestaurantToDessert")
 
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 model Billboard{
-  id            String        @id @default(uuid())
-  name          String
-  imageUrl      String
-  restaurant    Restaurant    @relation("RestaurantToBillboard", fields: [restaurantId], references: [id])
-  restaurantId  String
-  category      Category[]    @relation("BillboardToCategory")
+  id              String        @id @default(uuid())
+  name            String
+  imageUrl        String
+  restaurant      Restaurant    @relation("RestaurantToBillboard", fields: [restaurantId], references: [id])
+  restaurantId    String
+  category        Category[]    @relation("BillboardToCategory")
 
-  createdAt     DateTime      @default(now())  
-  updatedAt     DateTime      @updatedAt
+  createdAt       DateTime      @default(now())  
+  updatedAt       DateTime      @updatedAt
 
    @@index([restaurantId])
 }
 
 model Category{
-  id            String        @id @default(uuid())
-  name          String
-  restaurant    Restaurant    @relation("RestaurantToCategory", fields: [restaurantId], references: [id])
-  restaurantId  String
-  billboard     Billboard     @relation("BillboardToCategory", fields: [billboardId], references: [id])
-  billboardId   String
-  plats         Plat[]        @relation("CategoryToPlat")
-  vins          Vin[]         @relation("CategoryToVin")
-  biers         Bier[]        @relation("CategoryToBier")
-  dessert       Dessert[]     @relation("CategoryToDessert")
+  id              String      @id @default(uuid())
+  name            String
+  restaurant      Restaurant  @relation("RestaurantToCategory", fields: [restaurantId], references: [id])
+  restaurantId    String
+  billboard       Billboard   @relation("BillboardToCategory", fields: [billboardId], references: [id])
+  billboardId     String
+  plats           Plat[]      @relation("CategoryToPlat")
+  vins            Vin[]       @relation("CategoryToVin")
+  biers           Bier[]      @relation("CategoryToBier")
+  dessert         Dessert[]   @relation("CategoryToDessert")
 
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
   @@index([restaurantId])
   @@index([billboardId])
@@ -81,40 +81,40 @@ model Region {
 
 //Porter, IPA, Triple, Quadruple, ...
 model Style {
-  id            String      @id @default(uuid())
-  name          String
-  restaurant    Restaurant  @relation("RestaurantToStyle", fields: [restaurantId], references: [id])
-  restaurantId  String    //foreign key to Restaurant
-  biers         Bier[]
+  id              String      @id @default(uuid())
+  name            String
+  restaurant      Restaurant  @relation("RestaurantToStyle", fields: [restaurantId], references: [id])
+  restaurantId    String    //foreign key to Restaurant
+  biers           Bier[]
 
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
   @@index([restaurantId])
 }  
 
 model Grape {
-  id            String      @id @default(uuid())
-  name          String
-  restaurant    Restaurant  @relation("RestaurantToGrape", fields: [restaurantId], references: [id])
-  restaurantId  String    //foreign key to Restaurant
-  vins          Vin[]
+  id              String      @id @default(uuid())
+  name            String
+  restaurant      Restaurant  @relation("RestaurantToGrape", fields: [restaurantId], references: [id])
+  restaurantId    String    //foreign key to Restaurant
+  vins            Vin[]
 
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
   @@index([restaurantId])
 }  
 
 model Malt {
-  id            String      @id @default(uuid())
-  name          String
-  restaurant    Restaurant  @relation("RestaurantToMalt", fields: [restaurantId], references: [id])
-  restaurantId  String    //foreign key to Restaurant
-  biers         Bier[]
+  id              String      @id @default(uuid())
+  name            String
+  restaurant      Restaurant  @relation("RestaurantToMalt", fields: [restaurantId], references: [id])
+  restaurantId    String    //foreign key to Restaurant
+  biers           Bier[]
 
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
   @@index([restaurantId])
 }  
@@ -132,8 +132,9 @@ model Color {
   updatedAt       DateTime    @updatedAt
 
   @@index([restaurantId])
-}  
+}
 
+// 125cc, 250cc, boutteile, simple, double
 model Plat{
   id              String       @id @default(uuid())
   name            String
@@ -142,6 +143,7 @@ model Plat{
   restaurantId    String
   category        Category     @relation("CategoryToPlat", fields: [categoryId], references: [id])
   categoryId      String
+
   formats         Format[]     @relation("PlatToFormat")
   images          Image[]      @relation("PlatToImage")
 
@@ -169,6 +171,7 @@ model Vin {
   grapeId         String
   color           Color       @relation(fields: [colorId], references: [id])
   colorId         String
+
   formats         Format[]    @relation("VinToFormat")
   images          Image[]     @relation("VinToImage")
 
@@ -197,10 +200,11 @@ model Bier {
   regionId        String
   malt            Malt        @relation(fields: [maltId], references: [id])
   maltId          String
-  style           Style        @relation(fields: [styleId], references: [id])
+  style           Style       @relation(fields: [styleId], references: [id])
   styleId         String
   color           Color       @relation(fields: [colorId], references: [id])
   colorId         String
+
   formats         Format[]    @relation("BierToFormat")
   images          Image[]     @relation("BierToImage")
 
@@ -226,6 +230,8 @@ model Dessert{
   restaurantId    String
   category        Category     @relation("CategoryToDessert", fields: [categoryId], references: [id])
   categoryId      String
+
+  formats         Format[]     @relation("DessertToFormat")
   images          Image[]      @relation("DessertToImage")
 
   isFeatured      Boolean      @default(false)
@@ -238,24 +244,26 @@ model Dessert{
   @@index([categoryId])
 }
 
-// 125cc, 250cc, boutteile, simple, double
 model Format {
-  id          String      @id @default(uuid())
-  name        String?
-  price       Decimal
-  plat        Plat?       @relation("PlatToFormat", fields: [platId], references: [id])
-  platId      String?
-  vin         Vin?        @relation("VinToFormat", fields: [vinId], references: [id])
-  vinId       String?
-  bier        Bier?       @relation("BierToFormat", fields: [bierId], references: [id])
-  bierId      String?
-
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id              String      @id @default(uuid())
+  name            String      @default("unique")
+  price           Decimal
+  plat            Plat?       @relation("PlatToFormat", fields: [platId], references: [id])
+  platId          String?
+  vin             Vin?        @relation("VinToFormat", fields: [vinId], references: [id])
+  vinId           String?
+  bier            Bier?       @relation("BierToFormat", fields: [bierId], references: [id])
+  bierId          String?
+  dessert         Dessert?    @relation("DessertToFormat", fields: [dessertId], references: [id])
+  dessertId       String?
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
   @@index([platId])  
-  @@index([vinId])
-  @@index([bierId])
+  @@index([vinId])  
+  @@index([bierId])  
+  @@index([dessertId])  
 }
 
 model Image {

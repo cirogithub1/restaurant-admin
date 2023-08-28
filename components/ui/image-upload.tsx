@@ -17,13 +17,13 @@ interface Props {
 const ImageUpload: FC<Props> = ({ disabled, onChange, onRemove, value }) => {
 	
 	//Start block for preventing rerendering (hydration)
-	const [isMounted, setIsMounted] = useState(false)
-	useEffect(() => {
-		setIsMounted(true)
-	}, [])	
-	if (!isMounted) {
-		return null
-	} 
+	// const [isMounted, setIsMounted] = useState(false)
+	// useEffect(() => {
+	// 	setIsMounted(true)
+	// }, [])	
+	// if (!isMounted) {
+	// 	return null
+	// } 
 	//End block for preventing rerendering (hydration)
 
 	const onUpload = (result: any) => {
@@ -66,8 +66,7 @@ const ImageUpload: FC<Props> = ({ disabled, onChange, onRemove, value }) => {
 				uploadPreset="aflg6ldq"
 			>
 				{({ open }) => {
-					function onClickHandle(e: any) {
-						e.preventDefault()
+					function onClickHandle() {
 						open()
 					}
 					return (

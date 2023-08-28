@@ -1,20 +1,22 @@
 "use client"
 
 import { FC, useEffect, useState } from "react"
-import Image from "next/image"
-import { CldUploadWidget } from 'next-cloudinary'
-import { ImagePlus, Trash } from "lucide-react"
+import { Trash } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
+interface ItemFormat {
+	name: string
+	price: number
+}
 interface Props {
 	disabled: boolean
-	onChange: (value: string) => void
-	onRemove: (value: string) => void
-	value: string[]
+	onChange: (value: ItemFormat) => void
+	onRemove: (value: ItemFormat) => void
+	value: ItemFormat[]
 }
 
-const ImageUpload: FC<Props> = ({ disabled, onChange, onRemove, value }) => {
+const FormatUpload: FC<Props> = ({ disabled, onChange, onRemove, value }) => {
 	
 	//Start block for preventing rerendering (hydration)
 	const [isMounted, setIsMounted] = useState(false)
@@ -33,15 +35,15 @@ const ImageUpload: FC<Props> = ({ disabled, onChange, onRemove, value }) => {
 	return (
 		<div>
 			<div className="flex mb-4 items-center gap-4">
-				{value?.map((url) => (
+				{value?.map((itemFormat) => (
 					<div
-						key={url}
+						key={itemFormat.name}
 						className="relative w-48 h-48 rounded-md overflow-auto"
 					>
 						<div className="absolute z-10 top-2 right-2">
 							<Button
 								type="button"
-								onClick={() => onRemove(url)}
+								onClick={() => onRemove(itemFormat)}
 								variant={"destructive"}
 								size={"icon"}
 							>
@@ -49,43 +51,18 @@ const ImageUpload: FC<Props> = ({ disabled, onChange, onRemove, value }) => {
 							</Button>
 						</div>
 
-						<Image 
-							className="object-cover"
-							fill
-							sizes="100vw, 100vw, 100vw"
-							alt="image"
-							src={url}
-						/>
+						{/* display formats : name and price */}
+
+						<div>
+							<p>{itemFormat.name}</p>
+							<p>{itemFormat.price}</p>
+						</div>
 					</div>
 					
 				))}
 			</div>
-
-			<CldUploadWidget
-				onUpload={onUpload}
-				uploadPreset="aflg6ldq"
-			>
-				{({ open }) => {
-					function onClickHandle(e: any) {
-						e.preventDefault()
-						open()
-					}
-					return (
-						<Button
-							type="button"
-							disabled={disabled}
-							variant={"secondary"}
-							onClick={onClickHandle}
-						>
-							<ImagePlus className="h-6 w-6 mr-4"/>
-							
-							Upload image
-						</Button>
-					)
-				}}
-			</CldUploadWidget>
 		</div>
 	)
 }
 
-export default ImageUpload
+export default FormatUpload

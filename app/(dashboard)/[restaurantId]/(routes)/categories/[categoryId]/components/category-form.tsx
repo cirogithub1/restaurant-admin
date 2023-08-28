@@ -78,7 +78,7 @@ export const CategoryForm: FC<Props> = ({ initialData, billboards }) => {
 		try {
 			setLoading(true)
 			await axios.delete(`/api/${params.restaurantId}/categories/${params.categoryId}`)
-
+			
 			router.refresh()
 			router.push(`/${params.restaurantId}/categories`)
 			toast.success("Category deleted successfully")

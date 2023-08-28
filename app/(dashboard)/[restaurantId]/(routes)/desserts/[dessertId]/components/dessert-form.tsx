@@ -3,7 +3,7 @@
 import { FC, useState } from "react"
 import axios from "axios"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Category, Format, Image, Plat } from "@prisma/client"
+import { Category, Format, Image, Dessert } from "@prisma/client"
 import * as z from "zod"
 import { useForm, useFieldArray } from "react-hook-form"
 import { useParams, useRouter } from "next/navigation"
@@ -38,23 +38,23 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 interface Props {
-	initialData: Plat & {
+	initialData: Dessert & {
 		formats: 	Format[]
 		images: 	Image[]
 	} | null
 	categories: Category[]
 }
 
-export const PlatForm: FC<Props> = ({ initialData, categories }) => {
+export const DessertForm: FC<Props> = ({ initialData, categories }) => {
 	const params = useParams()
 	const router = useRouter()
 
 	const [open, setOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 
-	const title = initialData ? "Edit plat" : "Create plat"
-	const descriptionMsg = initialData ? "Edit plat" : "Add a new plat"
-	const toastMessage = initialData ? "Plat updated." : "Plat created."
+	const title = initialData ? "Edit dessert" : "Create dessert"
+	const descriptionMsg = initialData ? "Edit dessert" : "Add a new dessert"
+	const toastMessage = initialData ? "Dessert updated." : "Dessert created."
 	const action = initialData ? "Save changes" : "Create"
 
 	const form = useForm<FormValues>({
@@ -99,17 +99,17 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 
 			if (initialData) 
 			{
-				await axios.patch(`/api/${params.restaurantId}/plats/${params.platId}`, data)
+				await axios.patch(`/api/${params.restaurantId}/desserts/${params.dessertId}`, data)
 			} else {
-				await axios.post(`/api/${params.restaurantId}/plats`, data)
+				await axios.post(`/api/${params.restaurantId}/desserts`, data)
 			}
 			
 			router.refresh()
-			router.push(`/${params.restaurantId}/plats`)
+			router.push(`/${params.restaurantId}/desserts`)
 			toast.success(toastMessage)
 
 		} catch (error) {
-			console.log('/app/(dashboard)/[restaurantId]/routes)/plats/[platId]/components/plat-form.tsx => onSubmit=> error: ', error)
+			console.log('/app/(dashboard)/[restaurantId]/routes)/desserts/[dessertId]/components/dessert-form.tsx => onSubmit=> error: ', error)
 			setLoading(false)
 		} finally {
 			setLoading(false)
@@ -119,7 +119,7 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 	const onDelete = async () => {
 		try {
 			setLoading(true)
-			const resp = await fetch(`/api/${params.restaurantId}/plats/${params.platId}`, {
+			const resp = await fetch(`/api/${params.restaurantId}/desserts/${params.dessertId}`, {
 				method: "DELETE",
 				headers: {
 					'Content-Type': 'application/json',
@@ -127,8 +127,8 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 			})
 
 			router.refresh()
-			router.push(`/${params.restaurantId}/plats`)
-			toast.success("Plat deleted successfully")
+			router.push(`/${params.restaurantId}/desserts`)
+			toast.success("Dessert deleted successfully")
 
 		} catch (error) {
 			toast.error("Something went wrong")
@@ -205,7 +205,7 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 									<FormControl>
 										<Input 
 											disabled={loading}
-											placeholder="Plat name" 
+											placeholder="Dessert name" 
 											{...field} />
 									</FormControl>
 
@@ -278,62 +278,60 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 
 					{/* Formats */}
 					<div className="flex-col gap-8">
-						<div className="flex-col pb-4">
+						<div className="flex-col pb-2">
 							{fields.map((field, index) => {
 								return (
-									<div key={field.id}>
-										<div className="flex w-full gap-4">
-											<FormField 
-												control={form.control}
-												name={`formats.${index}.name`}
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Format</FormLabel>
+									<div key={field.id} className="flex w-full gap-4 pb-4">
+										<FormField 
+											control={form.control}
+											name={`formats.${index}.name`}
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Format</FormLabel>
 
-														<FormControl>
+													<FormControl>
+														<Input
+															disabled={loading}
+															placeholder="Format name" 
+															{...field} />
+													</FormControl>
+
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+
+										<FormField 
+											control={form.control}
+											name={`formats.${index}.price`}
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Price</FormLabel>
+
+													<FormControl>
+														<div className="flex gap-4">
 															<Input
 																disabled={loading}
-																placeholder="Format name" 
+																placeholder="Format price" 
 																{...field} />
-														</FormControl>
 
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
+															<Button
+																className="h-6 w-6 self-center"
+																variant={"destructive"}
+																size={'icon'}
+																disabled={loading}
+																onClick={() => remove(index)}
+															>
+																<Trash className="h-4 w-4" />
+															</Button>
+														</div>
 
-											<FormField 
-												control={form.control}
-												name={`formats.${index}.price`}
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Price</FormLabel>
+													</FormControl>
 
-														<FormControl>
-															<div className="flex gap-4">
-																<Input
-																	disabled={loading}
-																	placeholder="Format price" 
-																	{...field} />
-
-																<Button
-																	className="h-6 w-6 self-center"
-																	variant={"destructive"}
-																	size={'icon'}
-																	disabled={loading}
-																	onClick={() => remove(index)}
-																>
-																	<Trash className="h-4 w-4" />
-																</Button>
-															</div>
-
-														</FormControl>
-
-														<FormMessage />
-													</FormItem>															
-												)}
-											/>
-										</div>
+													<FormMessage />
+												</FormItem>															
+											)}
+										/>
 									</div>
 								)
 							})}
@@ -341,8 +339,8 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 
 						<Button
 							className="ml-auto"
-							disabled={loading}
 							size={'sm'}
+							disabled={loading}
 							type="button"
 							onClick={() => append({ name: "new format", price: 0.99 })}
 						>
@@ -370,7 +368,7 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 										</FormLabel>
 
 										<FormDescription>
-											This plat will be displayed on the home page
+											This dessert will be displayed on the home page
 										</FormDescription>
 									</div>
 								</FormItem>
@@ -396,7 +394,7 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 										</FormLabel>
 
 										<FormDescription>
-											This plat will not be displayed on the home page
+											This dessert will not be displayed on the home page
 										</FormDescription>
 									</div>
 								</FormItem>
@@ -405,7 +403,7 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 					</div>
 
 					<Button
-						className="ml-auto"
+						className="ml-auto text-lg"
 						type="submit"
 						size={'lg'}
 						disabled={loading}

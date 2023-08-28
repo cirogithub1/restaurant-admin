@@ -1,13 +1,10 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 
 import './globals.css'
 import { ModalProvider } from '@/providers/modal-provider'
 import { ToasterProvider } from '@/providers/toast-provider'
 import { ThemeProvider } from '@/providers/theme-provider'
-
-const inter = Inter({ subsets: ['latin'] })
 
 const clerk_pub_key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!
 
@@ -24,6 +21,10 @@ export default function RootLayout({
   return (
     <ClerkProvider publishableKey={clerk_pub_key}>
       <html lang="en">
+        <head>
+          <link rel="preload" href="globals.css" as="style" />
+        </head>
+
         <body >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem> {/* app-index.js:32 Warning: Extra attributes from the server */}
             <ModalProvider />

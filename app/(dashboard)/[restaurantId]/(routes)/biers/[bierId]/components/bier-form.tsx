@@ -3,7 +3,7 @@
 import { FC, useState } from "react"
 import axios from "axios"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Category, Format, Image, Plat } from "@prisma/client"
+import { Category, Format, Image, Bier, Region, Malt, Style, Color } from "@prisma/client"
 import * as z from "zod"
 import { useForm, useFieldArray } from "react-hook-form"
 import { useParams, useRouter } from "next/navigation"
@@ -24,6 +24,10 @@ const formSchema = z.object({
 	name: 				z.string().min(1),
 	description: 	z.string().min(2),
 	categoryId: 	z.string().min(1),
+	regionId:			z.string().min(1),
+	maltId:				z.string().min(1),
+	styleId:			z.string().min(1),
+	colorId:			z.string().min(1),
 	formats: 			z.object({ 
 		name: 	z.string(),
 		price: 	z.coerce.number().min(1)
@@ -38,23 +42,27 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 interface Props {
-	initialData: Plat & {
+	initialData: Bier & {
 		formats: 	Format[]
 		images: 	Image[]
 	} | null
 	categories: Category[]
+	regions:		Region[]
+	malts:			Malt[]
+	styles:			Style[]
+	colors:			Color[]
 }
 
-export const PlatForm: FC<Props> = ({ initialData, categories }) => {
+export const BierForm: FC<Props> = ({ initialData, categories, regions, malts, styles, colors }) => {
 	const params = useParams()
 	const router = useRouter()
 
 	const [open, setOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 
-	const title = initialData ? "Edit plat" : "Create plat"
-	const descriptionMsg = initialData ? "Edit plat" : "Add a new plat"
-	const toastMessage = initialData ? "Plat updated." : "Plat created."
+	const title = initialData ? "Edit bier" : "Create bier"
+	const descriptionMsg = initialData ? "Edit bier" : "Add a new bier"
+	const toastMessage = initialData ? "Bier updated." : "Bier created."
 	const action = initialData ? "Save changes" : "Create"
 
 	const form = useForm<FormValues>({
@@ -76,6 +84,10 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 				name: "",
 				description: "",
 				categoryId: "",
+				regionId:	"",
+				maltId:	"",
+				styleId:	"",
+				colorId:	"",
 				formats: [{
 					name: "",
 					price: 0
@@ -99,17 +111,17 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 
 			if (initialData) 
 			{
-				await axios.patch(`/api/${params.restaurantId}/plats/${params.platId}`, data)
+				await axios.patch(`/api/${params.restaurantId}/biers/${params.bierId}`, data)
 			} else {
-				await axios.post(`/api/${params.restaurantId}/plats`, data)
+				await axios.post(`/api/${params.restaurantId}/biers`, data)
 			}
 			
 			router.refresh()
-			router.push(`/${params.restaurantId}/plats`)
+			router.push(`/${params.restaurantId}/biers`)
 			toast.success(toastMessage)
 
 		} catch (error) {
-			console.log('/app/(dashboard)/[restaurantId]/routes)/plats/[platId]/components/plat-form.tsx => onSubmit=> error: ', error)
+			console.log('/app/(dashboard)/[restaurantId]/routes)/biers/[bierId]/components/bier-form.tsx => onSubmit=> error: ', error)
 			setLoading(false)
 		} finally {
 			setLoading(false)
@@ -119,7 +131,7 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 	const onDelete = async () => {
 		try {
 			setLoading(true)
-			const resp = await fetch(`/api/${params.restaurantId}/plats/${params.platId}`, {
+			const resp = await fetch(`/api/${params.restaurantId}/biers/${params.bierId}`, {
 				method: "DELETE",
 				headers: {
 					'Content-Type': 'application/json',
@@ -127,8 +139,8 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 			})
 
 			router.refresh()
-			router.push(`/${params.restaurantId}/plats`)
-			toast.success("Plat deleted successfully")
+			router.push(`/${params.restaurantId}/biers`)
+			toast.success("Bier deleted successfully")
 
 		} catch (error) {
 			toast.error("Something went wrong")
@@ -205,7 +217,7 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 									<FormControl>
 										<Input 
 											disabled={loading}
-											placeholder="Plat name" 
+											placeholder="Bier name" 
 											{...field} />
 									</FormControl>
 
@@ -274,6 +286,166 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 							)}
 						/>
 
+						{/* region */}
+						<FormField 
+							control={form.control}
+							name="regionId"
+							render={({ field}) =>(
+								<FormItem>
+									<FormLabel>Region</FormLabel>
+
+									<Select
+										disabled={loading}
+										onValueChange={field.onChange}
+										value={field.value}
+										defaultValue={field.value}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue 
+													defaultValue={field.value} 
+													placeholder="Select a region" />
+											</SelectTrigger>
+										</FormControl>
+
+										<SelectContent>
+											{regions?.map((region) => (
+												<SelectItem
+													key={region.id}
+													value={region.id}
+												>
+													{region.name}
+												</SelectItem>
+											))}
+
+										</SelectContent>
+									</Select>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						{/* malt */}
+						<FormField 
+							control={form.control}
+							name="maltId"
+							render={({ field}) =>(
+								<FormItem>
+									<FormLabel>Malt</FormLabel>
+
+									<Select
+										disabled={loading}
+										onValueChange={field.onChange}
+										value={field.value}
+										defaultValue={field.value}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue 
+													defaultValue={field.value} 
+													placeholder="Select a malt" />
+											</SelectTrigger>
+										</FormControl>
+
+										<SelectContent>
+											{malts?.map((malt) => (
+												<SelectItem
+													key={malt.id}
+													value={malt.id}
+												>
+													{malt.name}
+												</SelectItem>
+											))}
+
+										</SelectContent>
+									</Select>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						{/* style */}
+						<FormField 
+							control={form.control}
+							name="styleId"
+							render={({ field}) =>(
+								<FormItem>
+									<FormLabel>Style</FormLabel>
+
+									<Select
+										disabled={loading}
+										onValueChange={field.onChange}
+										value={field.value}
+										defaultValue={field.value}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue 
+													defaultValue={field.value} 
+													placeholder="Select a style" />
+											</SelectTrigger>
+										</FormControl>
+
+										<SelectContent>
+											{styles?.map((style) => (
+												<SelectItem
+													key={style.id}
+													value={style.id}
+												>
+													{style.name}
+												</SelectItem>
+											))}
+
+										</SelectContent>
+									</Select>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						{/* color */}
+						<FormField 
+							control={form.control}
+							name="colorId"
+							render={({ field}) =>(
+								<FormItem>
+									<FormLabel>Color</FormLabel>
+
+									<Select
+										disabled={loading}
+										onValueChange={field.onChange}
+										value={field.value}
+										defaultValue={field.value}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue 
+													defaultValue={field.value} 
+													placeholder="Select a color" />
+											</SelectTrigger>
+										</FormControl>
+
+										<SelectContent>
+											{colors?.map((color) => (
+												<SelectItem
+													key={color.id}
+													value={color.id}
+												>
+													{color.name}
+												</SelectItem>
+											))}
+
+										</SelectContent>
+									</Select>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
 					</div>
 
 					{/* Formats */}
@@ -317,9 +489,8 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 																	{...field} />
 
 																<Button
-																	className="h-6 w-6 self-center"
 																	variant={"destructive"}
-																	size={'icon'}
+																	size={'sm'}
 																	disabled={loading}
 																	onClick={() => remove(index)}
 																>
@@ -342,7 +513,6 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 						<Button
 							className="ml-auto"
 							disabled={loading}
-							size={'sm'}
 							type="button"
 							onClick={() => append({ name: "new format", price: 0.99 })}
 						>
@@ -370,7 +540,7 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 										</FormLabel>
 
 										<FormDescription>
-											This plat will be displayed on the home page
+											This bier will be displayed on the home page
 										</FormDescription>
 									</div>
 								</FormItem>
@@ -396,7 +566,7 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 										</FormLabel>
 
 										<FormDescription>
-											This plat will not be displayed on the home page
+											This bier will not be displayed on the home page
 										</FormDescription>
 									</div>
 								</FormItem>
@@ -407,7 +577,6 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 					<Button
 						className="ml-auto"
 						type="submit"
-						size={'lg'}
 						disabled={loading}
 					>
 						{action}
