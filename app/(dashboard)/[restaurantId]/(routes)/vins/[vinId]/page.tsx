@@ -1,10 +1,10 @@
 import prismadb from "@/lib/prismadb"
-import { PlatForm } from "./components/plat-form"
+import { VinForm } from "./components/vin-form"
 
-const PlatPage = async ({ params }: { params: { platId: string, restaurantId: string }}) => {
-	const plat = await prismadb.plat.findUnique({
+const VinPage = async ({ params }: { params: { vinId: string, restaurantId: string }}) => {
+	const vin = await prismadb.vin.findUnique({
 		where: {
-			id: params.platId
+			id: params.vinId
 		},
 		include: {
 			images: true,
@@ -18,16 +18,37 @@ const PlatPage = async ({ params }: { params: { platId: string, restaurantId: st
 		}
 	})
 
+	const regions = await prismadb.region.findMany({
+		where: {
+			restaurantId: params.restaurantId
+		}
+	})
+
+	const grapes = await prismadb.grape.findMany({
+		where: {
+			restaurantId: params.restaurantId
+		}
+	})
+
+	const colors = await prismadb.color.findMany({
+		where: {
+			restaurantId: params.restaurantId
+		}
+	})
+
 	return (
 		<div className="flex-col">
 			<div className="flex-1 space-y-4 p-8 pt-6">
-				<PlatForm 
+				<VinForm 
 					categories={categories}
-					initialData={plat}
+					regions={regions}
+					grapes={grapes}
+					colors={colors}
+					initialData={vin}
 				/>
 			</div>
 		</div>
 	)
 }
 
-export default PlatPage
+export default VinPage

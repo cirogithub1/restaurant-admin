@@ -30,11 +30,6 @@ export const MainNav = ({
 			active: pathname === `/${params.restaurantId}/categories`
 		},
 		{
-			href: `/${params.restaurantId}/regions`,
-			label: 'Regions',
-			active: pathname === `/${params.restaurantId}/regions`
-		},
-		{
 			href: `/${params.restaurantId}/colors`,
 			label: 'Colors',
 			active: pathname === `/${params.restaurantId}/colors`
@@ -43,6 +38,16 @@ export const MainNav = ({
 			href: `/${params.restaurantId}/grapes`,
 			label: 'Grapes',
 			active: pathname === `/${params.restaurantId}/grapes`
+		},
+		{
+			href: `/${params.restaurantId}/malts`,
+			label: 'Malts',
+			active: pathname === `/${params.restaurantId}/malts`
+		},
+		{
+			href: `/${params.restaurantId}/regions`,
+			label: 'Regions',
+			active: pathname === `/${params.restaurantId}/regions`
 		},
 		{
 			href: `/${params.restaurantId}/styles`,

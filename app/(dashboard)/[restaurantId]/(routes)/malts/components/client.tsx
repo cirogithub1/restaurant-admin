@@ -7,14 +7,14 @@ import { Button } from "@/components/ui/button"
 import { Heading } from "@/components/ui/heading"
 import { Separator } from "@/components/ui/separator"
 import { FC } from "react"
-import { VinColumn, columns } from "./columns"
+import { MaltColumn, columns } from "./columns"
 import { DataTable } from "@/components/ui/data-table"
 import { ApiList } from "@/components/ui/api-list"
 
 interface Props {
-	data: VinColumn[]
+	data: MaltColumn[]
 }
-export const VinClient: FC<Props> = ({ data }) => {
+export const MaltClient: FC<Props> = ({ data }) => {
 	const router = useRouter()
 	const params = useParams()
 
@@ -22,11 +22,11 @@ export const VinClient: FC<Props> = ({ data }) => {
 		<>
 			<div className="flex items-center justify-between"> 
 				<Heading 
-					title={`Vins (${data.length})`}
-					description="Manage vins"
+					title={`Malts (${data.length})`}
+					description="Manage Malts"
 				/>
 
-				<Button onClick={() => router.push(`/${params.restaurantId}/vins/new`)}>
+				<Button onClick={() => router.push(`/${params.restaurantId}/malts/new`)}>
 					<Plus className="mr-2 h-4 w-4"/>
 					
 					Add New
@@ -35,16 +35,16 @@ export const VinClient: FC<Props> = ({ data }) => {
 
 			<Separator />
 
-			<DataTable columns={columns} data={data} searchKey="name"/>
+			<DataTable searchKey="name" columns={columns} data={data} />
 
 			<Heading 
 				title="API"
-				description="API calls for Vin"
+				description="API calls for Malts"
 			/>
 
 			<Separator />
 
-			<ApiList entityName="vins" entityId="vinId"/>
+			<ApiList entityName="malts" entityId="maltId"/>
 		</>
 	)
 }

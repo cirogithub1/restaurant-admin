@@ -4,29 +4,33 @@ import { NextResponse } from "next/server"
 
 // for convention _var means not used or private
 export async function GET (
-	_req: Request, { params }: { params: { platId: string }}) 
+	_req: Request, { params }: { params: { bierId: string }}) 
 {
-	if (!params.platId) {
-		return new NextResponse("Plat id is required", { status: 401 })
+	if (!params.bierId) {
+		return new NextResponse("Bier id is required", { status: 401 })
 	}
 
 	try {
-		// const plat = await prismadb.plat.deleteMany({
-		const plat = await prismadb.plat.findUnique({
+		// const bier = await prismadb.bier.deleteMany({
+		const bier = await prismadb.bier.findUnique({
 			where: {
-				id: params.platId,
+				id: params.bierId,
 			},
 			include: {
 				category: true,
-				formats: true,
-				images: true,
+				region:		true,
+				malt: 		true,
+				style:		true,
+				color:		true,
+				formats: 	true,
+				images: 	true,
 			}
 		})
 
-		return NextResponse.json(plat)
+		return NextResponse.json(bier)
 		
 	} catch (error) {
-		console.log('[PLAT_GET]: ', error)
+		console.log('[BIER_GET]: ', error)
 		return new NextResponse("Internal GET error", { status: 500})				
 	}
 }
@@ -34,7 +38,7 @@ export async function GET (
 // Why PATCH instead of PUT?:  
 // https://medium.com/@9cv9official/what-are-get-post-put-patch-delete-a-walkthrough-with-javascripts-fetch-api-17be31755d28
 export async function PATCH (
-	req: Request, { params }: { params: { restaurantId: string, platId: string} }) 
+	req: Request, { params }: { params: { restaurantId: string, bierId: string} }) 
 {
 	const { userId } = auth()
 	const body = await req.json()
@@ -42,6 +46,10 @@ export async function PATCH (
 		name, 
 		description,
 		categoryId, 
+		regionId,
+		maltId,
+		styleId,
+		colorId,
 		formats,
 		images, 
 		isFeatured, 
@@ -63,6 +71,22 @@ export async function PATCH (
 		return new NextResponse("Category ID is required in post", { status: 400})			
 	}
 
+	if (!regionId) {
+		return new NextResponse("region ID is required in post", { status: 400})			
+	}
+
+	if (!maltId) {
+		return new NextResponse("malt ID is required in post", { status: 400})			
+	}
+
+	if (!styleId) {
+		return new NextResponse("style ID is required in post", { status: 400})			
+	}
+
+	if (!colorId) {
+		return new NextResponse("color ID is required in post", { status: 400})			
+	}
+
 	if (!formats || !formats.length) {
 		return new NextResponse("Images is required in post", { status: 400})			
 	}
@@ -71,8 +95,8 @@ export async function PATCH (
 		return new NextResponse("Images is required in post", { status: 400})			
 	}
 
-	if (!params.platId) {
-		return new NextResponse("Plat id is required in patch", { status: 401})
+	if (!params.bierId) {
+		return new NextResponse("Bier id is required in patch", { status: 401})
 	}
 
 	try {
@@ -87,14 +111,18 @@ export async function PATCH (
 			return new NextResponse("Unauthorized", { status: 403})
 		}
 
-		await prismadb.plat.update({
+		await prismadb.bier.update({
 			where: {
-				id: params.platId
+				id: params.bierId
 			},
 			data: {
 				name, 
 				description, 
 				categoryId, 
+				regionId,
+				maltId,
+				styleId,
+				colorId,
 				formats: {
 					deleteMany: {}
 				}, 
@@ -106,9 +134,9 @@ export async function PATCH (
 			}
 		})
 
-		const plat = await prismadb.plat.update({
+		const bier = await prismadb.bier.update({
 			where: {
-				id: params.platId
+				id: params.bierId
 			},
 			data: {
 				formats: {
@@ -128,17 +156,17 @@ export async function PATCH (
 			}
 		})
 
-		return NextResponse.json(plat)
+		return NextResponse.json(bier)
 		
 	} catch (error) {
-		console.log('[PLAT_PATCH]: ', error)
+		console.log('[BIER_PATCH]: ', error)
 		return new NextResponse("Internal PATCH error", { status: 500})				
 	}
 }
 
 // for convention _var means not used or private
 export async function DELETE (
-	_req: Request, { params }: { params: { restaurantId: string, platId: string }}) 
+	_req: Request, { params }: { params: { restaurantId: string, bierId: string }}) 
 {
 	const { userId } = auth()
 	
@@ -146,8 +174,8 @@ export async function DELETE (
 		return new NextResponse("Unauthorized", { status: 401})
 	}
 
-	if (!params.platId) {
-		return new NextResponse("Plat id is required", { status: 401})
+	if (!params.bierId) {
+		return new NextResponse("Bier id is required", { status: 401})
 	}
 
 	try {
@@ -162,17 +190,17 @@ export async function DELETE (
 			return new NextResponse("Unauthorized", { status: 403})
 		}
 
-		// const plat = await prismadb.plat.deleteMany({
-		const plat = await prismadb.plat.delete({
+		// const bier = await prismadb.bier.deleteMany({
+		const bier = await prismadb.bier.delete({
 			where: {
-				id: params.platId,
+				id: params.bierId,
 			}
 		})
 
-		return NextResponse.json(plat)
+		return NextResponse.json(bier)
 		
 	} catch (error) {
-		console.log('[PLAT_DELETE]: ', error)
+		console.log('[BIER_DELETE]: ', error)
 		return new NextResponse("Internal DELETE error", { status: 500})				
 	}
 }

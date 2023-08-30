@@ -8,7 +8,7 @@ import * as z from "zod"
 import { useForm, useFieldArray } from "react-hook-form"
 import { useParams, useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
-import { Trash } from "lucide-react"
+import { Trash, X } from "lucide-react"
 
 import { AlertModal } from "@/components/modals/alert-modal"
 import { Heading } from "@/components/ui/heading"
@@ -489,12 +489,13 @@ export const BierForm: FC<Props> = ({ initialData, categories, regions, malts, s
 																	{...field} />
 
 																<Button
+																	className="h-5 w-6 self-center"
 																	variant={"destructive"}
 																	size={'sm'}
 																	disabled={loading}
 																	onClick={() => remove(index)}
 																>
-																	<Trash className="h-4 w-4" />
+																	<X className="h-4 w-4" />
 																</Button>
 															</div>
 
@@ -511,12 +512,13 @@ export const BierForm: FC<Props> = ({ initialData, categories, regions, malts, s
 						</div>
 
 						<Button
-							className="ml-auto"
+							className="ml-auto h-fit bg-blue-400"
 							disabled={loading}
+							size={'sm'}
 							type="button"
 							onClick={() => append({ name: "new format", price: 0.99 })}
 						>
-							add format
+							Add Format
 						</Button>
 					</div>
 
@@ -575,8 +577,9 @@ export const BierForm: FC<Props> = ({ initialData, categories, regions, malts, s
 					</div>
 
 					<Button
-						className="ml-auto"
+						className="ml-auto text-lg"
 						type="submit"
+						size={'lg'}
 						disabled={loading}
 					>
 						{action}

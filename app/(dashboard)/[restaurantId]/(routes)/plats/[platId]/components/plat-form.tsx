@@ -8,7 +8,7 @@ import * as z from "zod"
 import { useForm, useFieldArray } from "react-hook-form"
 import { useParams, useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
-import { Trash } from "lucide-react"
+import { Trash, X } from "lucide-react"
 
 import { AlertModal } from "@/components/modals/alert-modal"
 import { Heading } from "@/components/ui/heading"
@@ -278,7 +278,7 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 
 					{/* Formats */}
 					<div className="flex-col gap-8">
-						<div className="flex-col pb-4">
+						<div className="flex-col pb-3">
 							{fields.map((field, index) => {
 								return (
 									<div key={field.id}>
@@ -317,13 +317,13 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 																	{...field} />
 
 																<Button
-																	className="h-6 w-6 self-center"
+																	className="h-5 w-6 self-center"
 																	variant={"destructive"}
 																	size={'icon'}
 																	disabled={loading}
 																	onClick={() => remove(index)}
 																>
-																	<Trash className="h-4 w-4" />
+																	<X className="h-4 w-4" />
 																</Button>
 															</div>
 
@@ -339,14 +339,14 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 							})}
 						</div>
 
-						<Button
-							className="ml-auto"
+						<Button 
+							className="ml-auto h-fit bg-blue-400"
 							disabled={loading}
 							size={'sm'}
 							type="button"
 							onClick={() => append({ name: "new format", price: 0.99 })}
 						>
-							add format
+							Add Format
 						</Button>
 					</div>
 
@@ -405,7 +405,7 @@ export const PlatForm: FC<Props> = ({ initialData, categories }) => {
 					</div>
 
 					<Button
-						className="ml-auto"
+						className="ml-auto text-xl"
 						type="submit"
 						size={'lg'}
 						disabled={loading}

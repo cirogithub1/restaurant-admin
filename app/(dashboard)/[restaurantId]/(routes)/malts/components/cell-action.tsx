@@ -4,14 +4,15 @@ import { FC, useState } from "react"
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react"
 import { toast } from "react-hot-toast"
 import { useParams, useRouter } from "next/navigation"
+import axios from "axios"
 
-import { VinColumn } from "./columns"
+import { MaltColumn } from "./columns"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { AlertModal } from "@/components/modals/alert-modal"
 
 interface Props {
-	data: VinColumn
+	data: MaltColumn
 }
 
 export const CellAction: FC<Props> = ({ data }) => {
@@ -27,20 +28,15 @@ export const CellAction: FC<Props> = ({ data }) => {
 	}
 
 	const onDelete = async () => {
+		setLoading(true)
 		try {
-			setLoading(true)
-			const resp = await fetch(`/api/${params.restaurantId}/vins/${data.id}`, {
-				method: "DELETE",
-				headers: {
-					'Content-Type': 'application/json',
-				}
-			})
+			await axios.delete(`/api/${params.restaurantId}/malts/${data.id}`)
 
 			router.refresh()
-			toast.success("Vin deleted successfully")
+			toast.success("Malt deleted successfully")
 
 		} catch (error) {
-			toast.error("Somthing when wrong")
+			toast.error("Remember to remove boissons from this malt first")
 		} finally {
 			setLoading(false)
 			setOpen(false)
@@ -66,7 +62,9 @@ export const CellAction: FC<Props> = ({ data }) => {
 				</DropdownMenuTrigger>
 
 				<DropdownMenuContent align="end">
-					<DropdownMenuLabel>Actions</DropdownMenuLabel>
+					<DropdownMenuLabel>
+						Actions
+					</DropdownMenuLabel>
 
 					<DropdownMenuItem onClick={() => onCopy(data.id)}>
 						<Copy className="mr-2 h-4 w-4" />
@@ -75,7 +73,7 @@ export const CellAction: FC<Props> = ({ data }) => {
 					</DropdownMenuItem>
 					
 					<DropdownMenuItem 
-						onClick={() => router.push(`/${params.restaurantId}/vins/${data.id}`)}
+						onClick={() => router.push(`/${params.restaurantId}/malts/${data.id}`)}
 					>
 						<Edit className="mr-2 h-4 w-4" />
 

@@ -10,6 +10,10 @@ export async function POST (req: Request, { params }: { params: { restaurantId: 
 		name, 
 		description, 
 		categoryId, 
+		regionId,
+		maltId,
+		styleId,
+		colorId,
 		formats,
 		images, 
 		isFeatured, 
@@ -29,6 +33,22 @@ export async function POST (req: Request, { params }: { params: { restaurantId: 
 
 	if (!categoryId) {
 		return new NextResponse("Category ID is required in post", { status: 400})			
+	}
+
+	if (!regionId) {
+		return new NextResponse("region ID is required in post", { status: 400})			
+	}
+
+	if (!maltId) {
+		return new NextResponse("malt ID is required in post", { status: 400})			
+	}
+
+	if (!styleId) {
+		return new NextResponse("style ID is required in post", { status: 400})			
+	}
+
+	if (!colorId) {
+		return new NextResponse("color ID is required in post", { status: 400})			
 	}
 
 	if (!formats || !formats.length) {
@@ -52,14 +72,18 @@ export async function POST (req: Request, { params }: { params: { restaurantId: 
 		})
 
 		if (!restaurantByUserId) {
-			return new NextResponse("User unauthorized to create this plat", { status: 403 })			
+			return new NextResponse("User unauthorized to create this bier", { status: 403 })			
 		}
 
-		const plat = await prismadb.plat.create({
+		const bier = await prismadb.bier.create({
 			data: {
 				name, 
 				description, 
 				categoryId, 
+				regionId,
+				maltId,
+				styleId,
+				colorId,
 				formats: {
 					createMany: {
 						data: [
@@ -80,10 +104,10 @@ export async function POST (req: Request, { params }: { params: { restaurantId: 
 			}
 		})
 
-		return NextResponse.json(plat)
+		return NextResponse.json(bier)
 
 	}	catch (error) {
-		console.log('[PLATS_POST]: ', error)
+		console.log('[BIERS_POST]: ', error)
 		return new NextResponse("Internal error", { status: 500})		
 	}
 }
@@ -99,7 +123,7 @@ export async function GET (req: Request, { params }: { params: { restaurantId: s
 	}
 
 	try {
-		const plats = await prismadb.plat.findMany({
+		const biers = await prismadb.bier.findMany({
 			where: {
 				restaurantId: params.restaurantId,
 				categoryId,
@@ -116,10 +140,10 @@ export async function GET (req: Request, { params }: { params: { restaurantId: s
 			}
 		})
 
-		return NextResponse.json(plats)
+		return NextResponse.json(biers)
 
 	}	catch (error) {
-		console.log('[PLATS_GET]: ', error)
+		console.log('[BIERS_GET]: ', error)
 		return new NextResponse("Internal error", { status: 500})		
 	}
 }

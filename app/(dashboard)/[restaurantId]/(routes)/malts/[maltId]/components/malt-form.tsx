@@ -2,73 +2,67 @@
 
 import { FC, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import * as z from "zod"
 import axios from "axios"
+import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
-import { Color } from "@prisma/client"
+import { Malt } from "@prisma/client"
 
 import { Heading } from "@/components/ui/heading"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-
 import { AlertModal } from "@/components/modals/alert-modal"
 
 const formSchema = z.object({
-	name: z.string().min(1),
-	value: z.string().min(4).regex(/^#/, {
-		message: 'String must be a valid hex color code'
-	})
+	name: z.string().min(1)
 })
 
 type FormValues = z.infer<typeof formSchema>
 
 interface Props {
-	initialData: Color | null
+	initialData: Malt | null
 }
 
-export const ColorForm: FC<Props> = ({ initialData }) => {
+export const MaltForm: FC<Props> = ({ initialData }) => {
 	const params = useParams()
 	const router = useRouter()
 
 	const [open, setOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 
-	const title = initialData ? "Edit color" : "Create color"
-	const description = initialData ? "Edit color" : "Add a new color"
-	const toastMessage = initialData ? "Color updated." : "Color created."
+	const title = initialData ? "Edit malt" : "Create malt"
+	const description = initialData ? "Edit malt" : "Add a new malt"
+	const toastMessage = initialData ? "Malt updated." : "Malt created."
 	const action = initialData ? "Save changes" : "Create"
 
 	const form = useForm<FormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: initialData || {
-			name: "",
-			value: ""
+			name: ""
 		}
 	})
 
 	const onSubmit = async (data: FormValues) => {
 		try {
-			// console.log('/dashboard/componenets/color-form.tsx: onSubmit()', data)	
 			setLoading(true)		
 
 			if (initialData) 
-			{
-				await axios.patch(`/api/${params.restaurantId}/colors/${params.colorId}`, data)
-			} else {
-				await axios.post(`/api/${params.restaurantId}/colors`, data)
-			}
+				{
+					await axios.patch(`/api/${params.restaurantId}/malts/${params.maltId}`, data)
+				} else {
+					await axios.post(`/api/${params.restaurantId}/malts`, data)
+				}
 			
 			router.refresh()
-			router.push(`/${params.restaurantId}/colors`)
+			router.push(`/${params.restaurantId}/malts`)
 			toast.success(toastMessage)
 
 		} catch (error) {
-			console.log('/color-form/onSubmit error: ', error)
+			console.log('/malts-form/onSubmit error: ', error)
 			toast.error('Something went wrong.')
 
 			setLoading(false)
@@ -80,14 +74,14 @@ export const ColorForm: FC<Props> = ({ initialData }) => {
 	const onDelete = async () => {
 		try {
 			setLoading(true)
-			await axios.delete(`/api/${params.restaurantId}/colors/${params.colorId}`)
+			await axios.delete(`/api/${params.restaurantId}/malts/${params.maltsId}`)
 
 			router.refresh()
-			router.push(`/${params.restaurantId}/colors`)
-			toast.success("Color deleted successfully")
+			router.push(`/${params.restaurantId}/malts`)
+			toast.success("Malt deleted successfully")
 
 		} catch (error) {
-			toast.error("Remember to remove products from this color first")
+			toast.error("Remember to remove vins from this malts first")
 		} finally {
 			setLoading(false)
 			setOpen(false)
@@ -140,39 +134,8 @@ export const ColorForm: FC<Props> = ({ initialData }) => {
 									<FormControl>
 										<Input 
 											disabled={loading}
-											placeholder="Color name" 
+											placeholder="Malt name" 
 											{...field} />
-									</FormControl>
-
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						
-						<FormField 
-							control={form.control}
-							name="value"
-							render={({ field }) =>(
-								<FormItem>
-									<FormLabel>
-										Value
-									</FormLabel>
-
-									<FormControl>
-										<div className="flex items-center gap-x-4">
-											<Input 
-												disabled={loading}
-												placeholder="Color value" 
-												{...field} />
-											
-											<div 
-												// tailwindcss doesn't work with this state:
-												// className={`border p-4 rounded-full bg-[${field.value}]`}
-												// or:
-												className="border p-4 rounded-full"
-												style={{ backgroundColor: field.value }}
-											/>
-										</div>
 									</FormControl>
 
 									<FormMessage />

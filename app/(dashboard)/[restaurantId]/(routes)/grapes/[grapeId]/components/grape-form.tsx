@@ -145,8 +145,9 @@ export const GrapeForm: FC<Props> = ({ initialData }) => {
 					</div>
 
 					<Button
-						className="ml-auto"
+						className="ml-auto text-lg"
 						type="submit"
+						size={'lg'}
 						disabled={loading}
 					>
 						{action}
